@@ -1,0 +1,148 @@
+--- net/Kconfig.dist	2014-05-15 12:01:37.891990073 +0200
++++ net/Kconfig	2014-05-15 12:03:56.487990056 +0200
+@@ -160,6 +160,16 @@ config NETFILTER_DEBUG
+ 	  You can say Y here if you want to get additional messages useful in
+ 	  debugging the netfilter code.
+ 
++config NETFILTER_ENABLE_BACKWARDS_COMPAT
++	bool  'Enable compatibility/OBSOLETE menu options'
++	depends on NETFILTER
++	default y
++	help
++	  If this option is selected, no Netfilter options marked as
++	  'backwards-compat' or 'OBSOLETE' will be offered.
++
++	  If unsure, say N.
++
+ config NETFILTER_ADVANCED
+ 	bool "Advanced netfilter configuration"
+ 	depends on NETFILTER
+--- net/netfilter/Kconfig.dist	2014-05-15 11:48:42.695990165 +0200
++++ net/netfilter/Kconfig	2014-05-15 12:13:24.499989988 +0200
+@@ -5,7 +5,7 @@ config NETFILTER_NETLINK
+ 	tristate
+ 
+ config NETFILTER_NETLINK_ACCT
+-tristate "Netfilter NFACCT over NFNETLINK interface"
++	tristate "Netfilter NFACCT over NFNETLINK interface"
+ 	depends on NETFILTER_ADVANCED
+ 	select NETFILTER_NETLINK
+ 	help
+@@ -87,6 +87,7 @@ config NF_CONNTRACK_PROCFS
+ 	bool "Supply CT list in procfs (OBSOLETE)"
+ 	default y
+ 	depends on PROC_FS
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	---help---
+ 	This option enables for the list of known conntrack entries
+ 	to be shown in procfs under net/netfilter/nf_conntrack. This
+@@ -630,6 +631,7 @@ config NETFILTER_XT_TARGET_CONNMARK
+ 	tristate  '"CONNMARK" target support'
+ 	depends on NF_CONNTRACK
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_CONNMARK
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -754,6 +756,7 @@ config NETFILTER_XT_TARGET_LOG
+ config NETFILTER_XT_TARGET_MARK
+ 	tristate '"MARK" target support'
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_MARK
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -999,6 +1002,7 @@ config NETFILTER_XT_MATCH_CONNMARK
+ 	tristate  '"connmark" connection mark match support'
+ 	depends on NF_CONNTRACK
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_CONNMARK
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -1184,6 +1188,7 @@ config NETFILTER_XT_MATCH_MAC
+ config NETFILTER_XT_MATCH_MARK
+ 	tristate '"mark" match support'
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_MARK
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+--- net/ipv4/netfilter/Kconfig.dist	2014-05-15 11:54:35.855990123 +0200
++++ net/ipv4/netfilter/Kconfig	2014-05-15 11:57:43.051990101 +0200
+@@ -99,6 +99,7 @@ config IP_NF_MATCH_AH
+ config IP_NF_MATCH_ECN
+ 	tristate '"ecn" match support'
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_MATCH_ECN
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -118,6 +119,7 @@ config IP_NF_MATCH_RPFILTER
+ config IP_NF_MATCH_TTL
+ 	tristate '"ttl" match support'
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_MATCH_HL
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -161,6 +163,7 @@ config IP_NF_TARGET_SYNPROXY
+ 
+ config IP_NF_TARGET_ULOG
+ 	tristate "ULOG target support (obsolete)"
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	default m if NETFILTER_ADVANCED=n
+ 	---help---
+ 
+@@ -208,6 +211,7 @@ config IP_NF_TARGET_MASQUERADE
+ config IP_NF_TARGET_NETMAP
+ 	tristate "NETMAP target support"
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_TARGET_NETMAP
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -217,6 +221,7 @@ config IP_NF_TARGET_NETMAP
+ config IP_NF_TARGET_REDIRECT
+ 	tristate "REDIRECT target support"
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_TARGET_REDIRECT
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -307,6 +312,7 @@ config IP_NF_TARGET_ECN
+ config IP_NF_TARGET_TTL
+ 	tristate '"TTL" target support'
+ 	depends on NETFILTER_ADVANCED && IP_NF_MANGLE
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_TARGET_HL
+ 	---help---
+ 	This is a backwards-compatible option for the user's convenience
+--- net/ipv6/netfilter/Kconfig.dist	2014-05-15 11:54:44.111990122 +0200
++++ net/ipv6/netfilter/Kconfig	2014-05-15 11:58:15.827990097 +0200
+@@ -110,6 +110,7 @@ config IP6_NF_MATCH_OPTS
+ config IP6_NF_MATCH_HL
+ 	tristate '"hl" hoplimit match support'
+ 	depends on NETFILTER_ADVANCED
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_MATCH_HL
+ 	---help---
+ 	This is a backwards-compat option for the user's convenience
+@@ -156,6 +157,7 @@ config IP6_NF_MATCH_RT
+ config IP6_NF_TARGET_HL
+ 	tristate '"HL" hoplimit target support'
+ 	depends on NETFILTER_ADVANCED && IP6_NF_MANGLE
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	select NETFILTER_XT_TARGET_HL
+ 	---help---
+ 	This is a backwards-compatible option for the user's convenience
+--- net/bridge/netfilter/Kconfig.dist	2014-05-15 12:04:57.791990049 +0200
++++ net/bridge/netfilter/Kconfig	2014-05-15 12:05:38.827990044 +0200
+@@ -195,6 +195,7 @@ config BRIDGE_EBT_LOG
+ 
+ config BRIDGE_EBT_ULOG
+ 	tristate "ebt: ulog support (OBSOLETE)"
++	depends on NETFILTER_ENABLE_BACKWARDS_COMPAT
+ 	help
+ 	  This option enables the old bridge-specific "ebt_ulog" implementation
+ 	  which has been obsoleted by the new "nfnetlink_log" code (see
